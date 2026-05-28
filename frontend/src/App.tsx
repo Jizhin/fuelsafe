@@ -5,6 +5,8 @@ import MapView from "./components/Map/MapView";
 import { RightToolRail } from "./components/RightToolRail";
 import { BottomTimeline } from "./components/BottomTimeline";
 import { VehicleSetup } from "./components/VehicleSetup";
+import { MobileTopBar } from "./components/mobile/MobileTopBar";
+import { MobileBottomCard } from "./components/mobile/MobileBottomCard";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { useNearbyStations } from "./hooks/useNearbyStations";
 import { useRoutingToStation } from "./hooks/useRouting";
@@ -28,17 +30,38 @@ function InnerApp() {
   useFuelConsumption(position);
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden font-sans" style={{ background: "#F4F7F5" }}>
+    <div
+      className="h-screen w-screen overflow-hidden font-sans"
+      style={{ background: "#F4F7F5" }}
+    >
       {!setupComplete && <VehicleSetup />}
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <div className="relative flex-1 overflow-hidden">
-          <MapView />
-          <RightToolRail />
+
+      {/* ── Desktop layout (md and up) ────────────────────────── */}
+      <div className="hidden md:flex flex-col h-full">
+        <Header />
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar />
+          <div className="relative flex-1 overflow-hidden">
+            <MapView />
+            <RightToolRail />
+          </div>
         </div>
+        <BottomTimeline />
       </div>
-      <BottomTimeline />
+
+      {/* ── Mobile layout (below md) ──────────────────────────── */}
+      <div className="md:hidden relative w-full h-full">
+        {/* Map: fills entire screen */}
+        <div style={{ position: "absolute", inset: 0 }}>
+          <MapView />
+        </div>
+
+        {/* Floating top bar */}
+        <MobileTopBar />
+
+        {/* Floating bottom card */}
+        <MobileBottomCard />
+      </div>
     </div>
   );
 }
